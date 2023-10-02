@@ -7,8 +7,8 @@ screenHeight = 100
 
 def create_centered_triangle(center, radius):
 	C1 = [center[0], center [1] - radius]
-	r120 = {'cos': cos(radians(120)), 'sin': sin(radians(120))}
-	r240 = {'cos': cos(radians(240)), 'sin': sin(radians(240))}
+	r120 = {'cos': cos(radius(120)), 'sin': sin(radius(120))}
+	r240 = {'cos': cos(radius(240)), 'sin': sin(radius(240))}
 	rX - [C1[0] - center[0] , C1[1] - center[1]]
 	rL, rR = [0, 0], [0, 0]
 
@@ -22,7 +22,7 @@ def create_centered_triangle(center, radius):
 
 	return [left, right, C1]
 
-triangy = create_centered_triangle((screenWidth // 2, screenHeight // 2), T_SIZE)
+triangy = create_centered_triangle((screenWidth // 2, screenHeight // 2), 100)
 
 for i in range(30, 360, 60):
 	new = []
