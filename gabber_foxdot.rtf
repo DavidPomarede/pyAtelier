@@ -1,0 +1,71 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2757
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red25\green28\blue31;\red69\green200\blue236;}
+{\*\expandedcolortbl;;\cssrgb\c12941\c14510\c16078;\cssrgb\c31373\c82353\c94118;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs27 \cf2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 // 60Hz Gabber Rave 1995\
+//remember to start the server, it works with fox dot:\
+// FoxDot.start   , for example\
+\
+\
+\
+\
+(\
+\pard\pardeftab720\partightenfactor0
+\cf3 \strokec3 SynthDef\cf2 \strokec2 (\\gabberkick, \{\
+    var snd, freq, high, lfo;\
+    freq = \\freq.kr(440) * (\cf3 \strokec3 Env\cf2 \strokec2 .perc(0.001, 0.08, curve: -1).ar * 48 * \\bend.kr(1)).midiratio;\
+    snd = \cf3 \strokec3 Saw\cf2 \strokec2 .ar(freq);\
+    snd = (snd * 100).tanh + ((snd.sign - snd) * -8.dbamp);\
+    high = \cf3 \strokec3 HPF\cf2 \strokec2 .ar(snd, 300);\
+    lfo = \cf3 \strokec3 SinOsc\cf2 \strokec2 .ar(8, [0, 0.5pi]).range(0, 0.01);\
+    high = high.dup(2) + (\cf3 \strokec3 DelayC\cf2 \strokec2 .ar(high, 0.01, lfo) * -2.dbamp);\
+    snd = \cf3 \strokec3 LPF\cf2 \strokec2 .ar(snd, 100).dup(2) + high;\
+    snd = \cf3 \strokec3 RLPF\cf2 \strokec2 .ar(snd, 7000, 2);\
+    snd = \cf3 \strokec3 BPeakEQ\cf2 \strokec2 .ar(snd, \\ffreq.kr(3000) * \cf3 \strokec3 XLine\cf2 \strokec2 .kr(1, 0.8, 0.3), 0.5, 15);\
+    snd = snd * \cf3 \strokec3 Env\cf2 \strokec2 .asr(0.001, 1, 0.05).ar(2, \\gate.kr(1));\
+    \cf3 \strokec3 Out\cf2 \strokec2 .ar(\\out.kr(0), snd * \\amp.kr(0.1));\
+\}).add;\
+\
+\cf3 \strokec3 SynthDef\cf2 \strokec2 (\\hoover, \{\
+    var snd, freq, bw, delay, decay;\
+    freq = \\freq.kr(440);\
+    freq = freq * \cf3 \strokec3 Env\cf2 \strokec2 ([-5, 6, 0], [0.1, 1.7], [\\lin, -4]).kr.midiratio;\
+    bw = 1.035;\
+    snd = \{ \cf3 \strokec3 DelayN\cf2 \strokec2 .ar(\cf3 \strokec3 Saw\cf2 \strokec2 .ar(freq * \cf3 \strokec3 ExpRand\cf2 \strokec2 (bw, 1 / bw)) + \cf3 \strokec3 Saw\cf2 \strokec2 .ar(freq * 0.5 * \cf3 \strokec3 ExpRand\cf2 \strokec2 (bw, 1 / bw)), 0.01, \cf3 \strokec3 Rand\cf2 \strokec2 (0, 0.01)) \}.dup(20);\
+    snd = (\cf3 \strokec3 Splay\cf2 \strokec2 .ar(snd) * 3).atan;\
+    snd = snd * \cf3 \strokec3 Env\cf2 \strokec2 .asr(0.01, 1.0, 1.0).kr(0, \\gate.kr(1));\
+    snd = \cf3 \strokec3 FreeVerb2\cf2 \strokec2 .ar(snd[0], snd[1], 0.3, 0.9);\
+    snd = snd * \cf3 \strokec3 Env\cf2 \strokec2 .asr(0, 1.0, 4, 6).kr(2, \\gate.kr(1));\
+    \cf3 \strokec3 Out\cf2 \strokec2 .ar(\\out.kr(0), snd * \\amp.kr(0.1));\
+\}).add;\
+)\
+\
+(\
+var durations;\
+durations = [1, 1, 1, 1, 3/4, 1/4, 1/2, 3/4, 1/4, 1/2];\
+\cf3 \strokec3 Ppar\cf2 \strokec2 ([\
+    \cf3 \strokec3 Pbind\cf2 \strokec2 (*[\
+        instrument: \\gabberkick,\
+        amp: -23.dbamp,\
+        freq: 60,\
+        legato: 0.8,\
+        ffreq: \cf3 \strokec3 Pseq\cf2 \strokec2 ((0..(durations.size * 4 - 1)).normalize, inf).linexp(0, 1, 100, 4000),\
+        dur: \cf3 \strokec3 Pseq\cf2 \strokec2 (durations, inf),\
+        bend: \cf3 \strokec3 Pfuncn\cf2 \strokec2 (\{ |x| if(x < (1/2), 0.4, 1) \}, inf) <> \cf3 \strokec3 Pkey\cf2 \strokec2 (\\dur),\
+    ]),\
+    \cf3 \strokec3 Pbind\cf2 \strokec2 (*[\
+        instrument: \\hoover,\
+        amp: -20.dbamp,\
+        midinote: 74,\
+        dur: durations.sum * 2,\
+        sustain: 7,\
+    ])\
+]).play(\cf3 \strokec3 TempoClock\cf2 \strokec2 (210 / 60));\
+)
+\fs29\fsmilli14875 \
+}

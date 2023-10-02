@@ -1,0 +1,10 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2757
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 Times-Roman;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs24 \cf0 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 1 // Quick way to connect all available devices to SC 2 MIDIIn.connectAll; 3 4 // Quick way to see all incoming MIDI messages 5 MIDIFunc.trace(true); 6 MIDIFunc.trace(false); // stop it 7 8 // Quick way to inspect all CC inputs 9 MIDIdef.cc(\\someCC, \{arg a, b; [a, b].postln\}); 10 11 // Get input only from cc 7, channel 0 12 MIDIdef.cc(\\someSpecificControl, \{arg a, b; [a, b].postln\}, ccNum: 7, chan: 0); 13 107 14 // A SynthDef for quick tests 15 SynthDef("quick", \{arg freq, amp; Out.ar(0, SinOsc.ar(freq) * Env.perc(level: amp). kr(2))\}).add; 16 17 // Play from a keyboard or drum pad 18 ( 19 MIDIdef.noteOn(\\someKeyboard, \{ arg vel, note; 20 Synth("quick", [\\freq, note.midicps, \\amp, vel.linlin(0, 127, 0, 1)]); 21 \}); 22 ) 23 24 // Create a pattern and play that from the keyboard 25 ( 26 a = Pbind( 27 \\instrument, "quick", 28 \\degree, Pwhite(0, 10, 5), 29 \\amp, Pwhite(0.05, 0.2), 30 \\dur, 0.1 31 ); 32 ) 33 34 // test 35 a.play; 36 37 // Trigger pattern from pad or keyboard 38 MIDIdef.noteOn(\\quneo, \{arg vel, note; a.play\});}
